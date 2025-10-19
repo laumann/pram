@@ -271,6 +271,11 @@ main() {
 			to_close=${pr%%.bugs*}
 			to_close="https://bugs.gentoo.org/${to_close#*://}"
 			;;
+		*://codeberg.org/*/*/pulls/*)
+			# Codeberg URL
+			to_close=${pr%.patch}
+			pr=${to_close}.patch
+			;;
 		*://*)
 			# arbitrary URL
 			to_close=

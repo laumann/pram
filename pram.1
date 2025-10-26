@@ -26,7 +26,8 @@ Override the editor used (default: ${EDITOR})
 Do not query options via git config.
 .TP
 \fB\-\-no\-api\fR
-Don't use the GitHub REST API even if a personal access token is present at \fB~/.github-token\fR.
+Don't use the Codeberg or GitHub REST API even if a personal access token
+is present at \fB~/.codeberg-token\fR or \fB~/.github-token\fR.
 .TP
 \fB\-G\fR, \fB\-\-no\-gpgsign\fR
 Do not automatically GPG-sign commits
@@ -74,6 +75,13 @@ string options:
 .TP
 boolean options (\fB--type bool\fR):
 \fIpram.gpgsign\fR, \fIpram.interactive\fR, \fIpram.signoff\fR
+
+.SH CODEBERG REST API SUPPORT
+PRam will use the Codeberg REST API if a token is present at \fB~/.codeberg-token\fR.
+
+.UR https://docs.codeberg.org/advanced/access-token/
+See Codeberg documentation on how to create one
+.UE .
 
 .SH GITHUB REST API SUPPORT
 PRam will use the GitHub REST API if a token is present at \fB~/.github-token\fR.

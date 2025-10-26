@@ -272,10 +272,21 @@ main() {
 			to_close=${pr%%.bugs*}
 			to_close="https://bugs.gentoo.org/${to_close#*://}"
 			;;
+		*://codeberg.org/*/*/pulls/*/commits/*)
+			# Simplify for easier use via the api
+			pr=${pr/pulls\/*\/commits/commit}
+			pr=${pr%.patch}.patch
+			to_close=
+			;;
 		*://codeberg.org/*/*/pulls/*)
 			# Codeberg URL
 			to_close=${pr%.patch}
 			pr=${to_close}.patch
+			;;
+		*://codeberg.org/*/*/commit/*|*://codeberg.org/*/*/compare/*)
+			# Codeberg branch/commit diff
+			pr=${pr%.patch}.patch
+			to_close=
 			;;
 		*://*)
 			# arbitrary URL
@@ -306,10 +317,15 @@ main() {
 	fi
 
 	if [[ -n ${pr} ]]; then
-		if [[ -n ${api_codeberg} && ${pr} == *://codeberg.org/*/*/pulls/* ]]; then
+		if [[ -n ${api_codeberg} && (
+			${pr} == *://codeberg.org/*/commit/* ||
+			#${pr} == *://codeberg.org/*/compare/* || # cannot get a patch for compare via the api
+			${pr} == *://codeberg.org/*/*/pulls/* )
+		]]; then
 			# Modify possible patch links to be applicable to the Codeberg REST API
 			# https://codeberg.org/api/swagger
 			pr=${pr/codeberg.org/codeberg.org\/api\/v1\/repos}
+			pr=${pr/commit/git\/commits}
 			wget --header="Authorization: Bearer $(< ~/.codeberg-token)" \
 				-O "${tempdir}/all.patch" "${pr}" || die "Fetching patch failed"
 		elif [[ -n ${api_github} && (
